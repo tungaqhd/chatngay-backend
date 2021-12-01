@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 const chatSchema = mongoose.Schema({
-  u_1: {
+  u1: {
     type: mongoose.SchemaTypes.ObjectId,
     required: true,
   },
-  u_2: {
+  u2: {
     type: mongoose.SchemaTypes.ObjectId,
     required: true,
   },
