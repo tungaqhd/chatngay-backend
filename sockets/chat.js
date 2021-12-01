@@ -95,7 +95,8 @@ exports.sendMessage = async (io, token, to, content) => {
     }
     const message = new Message({ chatId: chat._id, from, content });
     await message.save();
-    io.to(chat._id.toString()).emit("newMessages", message);
+    io.to(chat.u1.toString()).emit("newMessages", message);
+    io.to(chat.u2.toString()).emit("newMessages", message);
   } catch (error) {
     console.log("sendMessage", error.message);
   }

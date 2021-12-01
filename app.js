@@ -2,6 +2,8 @@ require("dotenv").config();
 const db = require("./config/database");
 db();
 
+const { getUserId } = require("./common/jwt");
+
 const express = require("express");
 const socketio = require("socket.io");
 const http = require("http");
@@ -13,6 +15,13 @@ const io = socketio(server);
 
 const { sendMessage, joinRoom } = require("./sockets/chat");
 io.on("connection", async (socket) => {
+  socket.on("initChat", async (token) => {
+    const userId = await getUserId(token);
+    if (token) {
+      socket.join(userId);
+    }
+  });
+
   socket.on("sendMessage", async (token, to, content) => {
     sendMessage(io, token, to, content);
   });
