@@ -27,7 +27,7 @@ exports.getChatList = async (req, res) => {
 
 exports.getChat = async (req, res) => {
   try {
-    const page = +req.params.page || 1;
+    const page = +req.query.page || 1;
     const skip = 30 * (page - 1);
     const chatId = req.params.id;
     const chat = await Chat.findById(chatId);
