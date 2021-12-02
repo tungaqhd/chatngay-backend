@@ -9,9 +9,19 @@ const messageSchema = mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
     },
+    msgType: {
+      type: String,
+      default: "text",
+    },
+    fileName: {
+      type: String,
+    },
     content: {
       type: String,
-      required: true,
+    },
+    fileId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "file",
     },
   },
   {

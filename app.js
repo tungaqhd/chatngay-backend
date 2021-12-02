@@ -13,6 +13,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
 
+app.use((req, res, next) => {
+  req.socketCon = io;
+  next();
+});
+
 const { sendMessage, joinRoom } = require("./sockets/chat");
 io.on("connection", async (socket) => {
   socket.on("initChat", async (token) => {

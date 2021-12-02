@@ -4,6 +4,7 @@ const router = express.Router();
 const chatController = require("../controllers/chat.controller");
 
 router.get("/:id", chatController.getChat);
+router.post("/:id/file", chatController.sendFile);
 // router.post(
 //   "/forgot-password",
 //   authValidation.forgotPassword(),

@@ -18,7 +18,7 @@ const userSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  is_online: {
+  isOnline: {
     type: Boolean,
     default: false,
   },
