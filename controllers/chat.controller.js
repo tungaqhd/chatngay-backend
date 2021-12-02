@@ -7,16 +7,54 @@ const File = require("../models/File.model");
 
 exports.getChatList = async (req, res) => {
   try {
-    const chats = await Chat.find({
-      $or: [
-        {
-          u1: req.user._id,
+    const chats = await Chat.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              u1: req.user._id,
+            },
+            {
+              u2: req.user._id,
+            },
+          ],
         },
-        {
-          u2: req.user._id,
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: { u1: "$u1" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$u1"] } } },
+            { $project: { password: 0, socketId: 0 } },
+          ],
+          as: "user1",
         },
-      ],
-    });
+      },
+      {
+        $lookup: {
+          from: "users",
+          let: { u2: "$u2" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$u2"] } } },
+            { $project: { password: 0, socketId: 0 } },
+          ],
+          as: "user2",
+        },
+      },
+    ]);
+    // const chats = await Chat.find({
+    //   $or: [
+    //     {
+    //       u1: req.user._id,
+    //     },
+    //     {
+    //       u2: req.user._id,
+    //     },
+    //   ],
+    // })
+    //   .populate("u1")
+    //   .populate("u2");
 
     res.json(chats);
   } catch (error) {

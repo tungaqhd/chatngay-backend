@@ -3,6 +3,7 @@ const router = express.Router();
 
 const chatController = require("../controllers/chat.controller");
 
+router.get("/", chatController.getChatList);
 router.get("/:id", chatController.getChat);
 router.post("/:id/file", chatController.sendFile);
 // router.post(

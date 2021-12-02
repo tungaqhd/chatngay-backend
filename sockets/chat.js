@@ -1,3 +1,4 @@
+const xss = require("xss");
 const { getUserId } = require("../common/jwt");
 const Chat = require("../models/Chat.model");
 const User = require("../models/User.model");
@@ -23,48 +24,19 @@ exports.joinRoom = async (socket, token, chatId) => {
 exports.sendMessage = async (io, token, to, payload) => {
   try {
     const data = JSON.parse(payload);
-    // if (message.length > 200) {
-    //     io.to("home").emit(
-    //       "alert",
-    //       "error",
-    //       "Maximum length of message is 200 characters!"
-    //     );
-    //     return;
-    //   }
-
-    //   let user;
-    //   try {
-    //     let token = jwt.verify(payload, process.env.JWT_TOKEN);
-    //     user = await User.findById(token.id);
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    //   message = xss(message);
-    //   message = linkifyHtml(message, {
-    //     defaultProtocol: "https",
-    //   });
-    //   let timer = moment().format("MMMM Do YYYY, h:mm:ss a");
-    //   const messageSave = Message({
-    //     userId: user._id,
-    //     message,
-    //     username: user.username,
-    //     avatar: user.avatar,
-    //     time: timer,
-    //   });
-    //   await messageSave.save();
-
-    //   io.to("home").emit(
-    //     "receiveMessage",
-    //     user.username,
-    //     message,
-    //     timer,
-    //     user.avatar,
-    //     messageSave._id
-    //   );
-
     const from = await getUserId(token);
     if (!from) {
       return;
+    }
+    if (data.content) {
+      if (data.content.length > 1000) {
+        io.to(from).emit(
+          "receiveMessage",
+          "The maximum message length is 1000 characters"
+        );
+        return;
+      }
+      data.content = xss(data.content);
     }
 
     let chat = await Chat.findOne({

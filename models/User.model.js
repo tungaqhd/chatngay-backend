@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
 const userSchema = mongoose.Schema({
+  avatar: {
+    type: String,
+    default: "user.png",
+  },
   username: {
     type: String,
     required: true,
@@ -26,5 +30,12 @@ const userSchema = mongoose.Schema({
     type: String,
   },
 });
+userSchema.methods.toJSON = function () {
+  let user = this;
+  user = user.toObject();
+  delete user.password;
+  delete user.socketId;
+  return user;
+};
 const User = mongoose.model("user", userSchema);
 module.exports = User;

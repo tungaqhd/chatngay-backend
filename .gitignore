@@ -1,3 +1,5 @@
 /node_modules
 /public/files/*
+/public/avatars/*
 !/public/files/index.html
+!/public/avatars/user.png
