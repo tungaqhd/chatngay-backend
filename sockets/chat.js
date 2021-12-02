@@ -1,5 +1,6 @@
 const { getUserId } = require("../common/jwt");
 const Chat = require("../models/Chat.model");
+const User = require("../models/User.model");
 const Message = require("../models/Message.model");
 
 exports.joinRoom = async (socket, token, chatId) => {

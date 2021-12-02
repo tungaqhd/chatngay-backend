@@ -2,6 +2,8 @@ require("dotenv").config();
 const db = require("./config/database");
 db();
 
+const User = require("./models/User.model");
+
 const { getUserId } = require("./common/jwt");
 
 const express = require("express");
@@ -18,13 +20,11 @@ app.use((req, res, next) => {
   next();
 });
 
+const { initChat, destroyCon } = require("./sockets/main");
 const { sendMessage, joinRoom } = require("./sockets/chat");
 io.on("connection", async (socket) => {
   socket.on("initChat", async (token) => {
-    const userId = await getUserId(token);
-    if (token) {
-      socket.join(userId);
-    }
+    initChat(socket, token);
   });
 
   socket.on("sendMessage", async (token, to, payload) => {
@@ -33,6 +33,10 @@ io.on("connection", async (socket) => {
 
   socket.on("joinRoom", async (token, chatId) => {
     joinRoom(socket, token, chatId);
+  });
+
+  socket.on("disconnect", () => {
+    destroyCon(socket);
   });
 });
 
