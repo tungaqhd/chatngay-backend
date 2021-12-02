@@ -27,8 +27,8 @@ io.on("connection", async (socket) => {
     }
   });
 
-  socket.on("sendMessage", async (token, to, content) => {
-    sendMessage(io, token, to, content);
+  socket.on("sendMessage", async (token, to, payload) => {
+    sendMessage(io, token, to, payload);
   });
 
   socket.on("joinRoom", async (token, chatId) => {

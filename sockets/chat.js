@@ -19,8 +19,9 @@ exports.joinRoom = async (socket, token, chatId) => {
   }
 };
 
-exports.sendMessage = async (io, token, to, content) => {
+exports.sendMessage = async (io, token, to, payload) => {
   try {
+    const data = JSON.parse(payload);
     // if (message.length > 200) {
     //     io.to("home").emit(
     //       "alert",
@@ -93,7 +94,7 @@ exports.sendMessage = async (io, token, to, content) => {
       chat = new Chat({ u1: from, u2: to });
       await chat.save();
     }
-    const message = new Message({ chatId: chat._id, from, content });
+    const message = new Message({ chatId: chat._id, from, ...data });
     await message.save();
     io.to(chat.u1.toString()).emit("newMessages", message);
     io.to(chat.u2.toString()).emit("newMessages", message);

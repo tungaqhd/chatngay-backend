@@ -5,6 +5,10 @@ const messageSchema = mongoose.Schema(
       type: mongoose.SchemaTypes.ObjectId,
       required: true,
     },
+    replyToId: {
+      type: mongoose.SchemaTypes.ObjectId,
+      ref: "message",
+    },
     chatId: {
       type: mongoose.SchemaTypes.ObjectId,
       required: true,

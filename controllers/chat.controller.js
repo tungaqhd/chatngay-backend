@@ -38,7 +38,8 @@ exports.getChat = async (req, res) => {
       .sort({ _id: -1 })
       .limit(30)
       .skip(skip)
-      .populate("fileId");
+      .populate("fileId")
+      .populate("replyToId");
 
     res.json(messages);
   } catch (error) {
