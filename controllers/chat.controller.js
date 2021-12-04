@@ -43,18 +43,6 @@ exports.getChatList = async (req, res) => {
         },
       },
     ]);
-    // const chats = await Chat.find({
-    //   $or: [
-    //     {
-    //       u1: req.user._id,
-    //     },
-    //     {
-    //       u2: req.user._id,
-    //     },
-    //   ],
-    // })
-    //   .populate("u1")
-    //   .populate("u2");
 
     res.json(chats);
   } catch (error) {

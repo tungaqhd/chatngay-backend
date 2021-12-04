@@ -2,6 +2,8 @@ require("dotenv").config();
 const db = require("./config/database");
 db();
 
+const cors = require("cors");
+
 const User = require("./models/User.model");
 
 const { getUserId } = require("./common/jwt");
@@ -14,6 +16,8 @@ const moment = require("moment");
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
+
+app.use(cors());
 
 app.use((req, res, next) => {
   req.socketCon = io;
