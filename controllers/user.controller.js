@@ -1,4 +1,14 @@
 const User = require("../models/User.model");
+
+exports.getProfile = async (req, res) => {
+  try {
+    res.json(req.user);
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ msg: "An unexpected error has occurred" });
+  }
+};
+
 exports.findUser = async (req, res) => {
   try {
     const content = req.query.content || "";
