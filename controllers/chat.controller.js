@@ -42,8 +42,20 @@ exports.getChatList = async (req, res) => {
           as: "user2",
         },
       },
-    ]);
+      {
+        $lookup: {
+          from: "messages",
 
+          let: { chatId: "$_id" },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$chatId", "$$chatId"] } } },
+            { $sort: { _id: -1 } },
+            { $limit: 1 },
+          ],
+          as: "messages",
+        },
+      },
+    ]);
     res.json(chats);
   } catch (error) {
     console.log(error.message);
