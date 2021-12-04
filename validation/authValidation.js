@@ -14,9 +14,6 @@ module.exports = {
       check("name", "Name is not valid")
         .notEmpty()
         .withMessage("Name is required")
-        .withMessage(
-          "Name should contain only alphabets, numbers and underlined"
-        )
         .trim(),
       check("email", "Email is required").isEmail().normalizeEmail(),
       check("password", "Password is not valid").isLength({ min: 6 }).trim(),
