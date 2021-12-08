@@ -146,8 +146,11 @@ exports.sendFile = async (req, res) => {
         );
         fs.renameSync(oldPath, newPath);
 
-        req.socketCon.to(chat.u1.toString()).emit("newMessages", message);
-        req.socketCon.to(chat.u2.toString()).emit("newMessages", message);
+        const newMessage = await Message.findById(message._id)
+          .populate("fileId")
+          .populate("replyToId");
+        req.socketCon.to(chat.u1.toString()).emit("newMessages", newMessage);
+        req.socketCon.to(chat.u2.toString()).emit("newMessages", newMessage);
       }
       res.json({ fields, files });
     });
