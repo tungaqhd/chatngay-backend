@@ -100,7 +100,7 @@ exports.sendFile = async (req, res) => {
           {
             $and: [
               {
-                u1: from,
+                u1: req.user._id,
               },
               {
                 u2: to,
@@ -113,7 +113,7 @@ exports.sendFile = async (req, res) => {
                 u1: to,
               },
               {
-                u2: from,
+                u2: req.user._id,
               },
             ],
           },
