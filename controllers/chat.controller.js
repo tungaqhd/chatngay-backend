@@ -131,7 +131,7 @@ exports.sendFile = async (req, res) => {
 
         const message = new Message({
           from: req.user._id,
-          chatId: req.params.id,
+          chatId: chat._id,
           msgType: "file",
           fileId: file._id,
         });
