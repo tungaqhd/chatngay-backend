@@ -91,11 +91,38 @@ exports.sendFile = async (req, res) => {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
       if (err) {
-        next(err);
-        return;
+        throw err;
       }
 
-      const chat = await Chat.findById(req.params.id);
+      const to = req.params.id;
+      let chat = await Chat.findOne({
+        $or: [
+          {
+            $and: [
+              {
+                u1: from,
+              },
+              {
+                u2: to,
+              },
+            ],
+          },
+          {
+            $and: [
+              {
+                u1: to,
+              },
+              {
+                u2: from,
+              },
+            ],
+          },
+        ],
+      });
+      if (!chat) {
+        chat = new Chat({ u1: from, u2: to });
+        await chat.save();
+      }
       if (chat) {
         const file = new File({
           size: files.uploadedFile.size,
