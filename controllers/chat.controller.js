@@ -124,6 +124,7 @@ exports.sendFile = async (req, res) => {
         await chat.save();
       }
       if (chat) {
+        const spl = files.uploadedFile.originalFilename.split(".");
         const file = new File({
           size: files.uploadedFile.size,
           originalFilename: files.uploadedFile.originalFilename,
@@ -134,11 +135,11 @@ exports.sendFile = async (req, res) => {
           chatId: chat._id,
           msgType: "file",
           fileId: file._id,
+          fileName: `${file._id}.${spl[spl.length - 1]}`,
         });
 
         await Promise.all([file.save(), message.save()]);
         const oldPath = files.uploadedFile.filepath;
-        const spl = files.uploadedFile.originalFilename.split(".");
         const newPath = path.join(
           __dirname,
           `../public/files/${file._id}.${spl[spl.length - 1]}`
