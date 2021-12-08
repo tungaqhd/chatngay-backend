@@ -129,13 +129,13 @@ exports.sendFile = async (req, res) => {
           size: files.uploadedFile.size,
           originalFilename: files.uploadedFile.originalFilename,
         });
+        file.fileName = `${file._id}.${spl[spl.length - 1]}`;
 
         const message = new Message({
           from: req.user._id,
           chatId: chat._id,
           msgType: "file",
           fileId: file._id,
-          fileName: `${file._id}.${spl[spl.length - 1]}`,
         });
 
         await Promise.all([file.save(), message.save()]);
