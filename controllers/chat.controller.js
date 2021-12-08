@@ -138,9 +138,10 @@ exports.sendFile = async (req, res) => {
 
         await Promise.all([file.save(), message.save()]);
         const oldPath = files.uploadedFile.filepath;
+        const spl = files.uploadedFile.originalFilename.split(".");
         const newPath = path.join(
           __dirname,
-          `../public/files/${file._id}-${files.uploadedFile.originalFilename}`
+          `../public/files/${file._id}.${spl[spl.length - 1]}`
         );
         fs.renameSync(oldPath, newPath);
 
