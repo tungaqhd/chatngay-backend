@@ -4,7 +4,7 @@ const path = require("path");
 const Chat = require("../models/Chat.model");
 const Message = require("../models/Message.model");
 const File = require("../models/File.model");
-
+const xss = require("xss");
 exports.getChatList = async (req, res) => {
   try {
     const chats = await Chat.aggregate([
@@ -122,6 +122,67 @@ exports.sendFile = async (req, res) => {
       }
       res.json({ fields, files });
     });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({ msg: "An unexpected error has occurred" });
+  }
+};
+
+exports.sendMessage = async (req, res) => {
+  try {
+    const { data } = req.body;
+    const to = req.params.id;
+    const from = req.user._id;
+    if (!from) {
+      return;
+    }
+    if (data.content) {
+      if (data.content.length > 1000) {
+        req.socketCon
+          .to(from)
+          .emit(
+            "receiveMessage",
+            "The maximum message length is 1000 characters"
+          );
+        return;
+      }
+      data.content = xss(data.content);
+    }
+
+    let chat = await Chat.findOne({
+      $or: [
+        {
+          $and: [
+            {
+              u1: from,
+            },
+            {
+              u2: to,
+            },
+          ],
+        },
+        {
+          $and: [
+            {
+              u1: to,
+            },
+            {
+              u2: from,
+            },
+          ],
+        },
+      ],
+    });
+    if (!chat) {
+      chat = new Chat({ u1: from, u2: to });
+      await chat.save();
+    }
+    const message = new Message({ chatId: chat._id, from, ...data });
+    await message.save();
+    req.socketCon.to(chat.u1.toString()).emit("newMessages", message);
+    req.socketCon.to(chat.u2.toString()).emit("newMessages", message);
+
+    res.send();
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: "An unexpected error has occurred" });
