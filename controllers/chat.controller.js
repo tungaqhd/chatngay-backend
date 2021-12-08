@@ -73,7 +73,7 @@ exports.getChat = async (req, res) => {
       return res.status(404).send();
     }
     const messages = await Message.find({ chatId })
-      .sort({ _id: -1 })
+      .sort({ _id: 1 })
       .limit(30)
       .skip(skip)
       .populate("fileId")
