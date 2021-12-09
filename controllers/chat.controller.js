@@ -79,13 +79,13 @@ exports.getChat = async (req, res) => {
       return res.status(404).send();
     }
     const messages = await Message.find({ chatId })
-      .sort({ _id: 1 })
+      .sort({ _id: -1 })
       .limit(300)
       .skip(skip)
       .populate("fileId")
       .populate("replyToId");
 
-    res.json(messages);
+    res.json({ messages: messages.reverse() });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: "An unexpected error has occurred" });
