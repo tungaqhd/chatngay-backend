@@ -72,7 +72,7 @@ exports.getChatList = async (req, res) => {
 exports.getChat = async (req, res) => {
   try {
     const page = +req.query.page || 1;
-    const skip = 30 * (page - 1);
+    const skip = 300 * (page - 1);
     const chatId = req.params.id;
     const chat = await Chat.findById(chatId);
     if (!chat) {
@@ -80,7 +80,7 @@ exports.getChat = async (req, res) => {
     }
     const messages = await Message.find({ chatId })
       .sort({ _id: 1 })
-      .limit(30)
+      .limit(300)
       .skip(skip)
       .populate("fileId")
       .populate("replyToId");
