@@ -13,9 +13,18 @@ exports.findUser = async (req, res) => {
   try {
     const content = req.query.content || "";
     const users = await User.find({
-      $or: [
-        { username: { $regex: content, $options: "i" } },
-        { email: { $regex: content, $options: "i" } },
+      $and: [
+        {
+          $or: [
+            { username: { $regex: content, $options: "i" } },
+            { email: { $regex: content, $options: "i" } },
+          ],
+        },
+        {
+          _id: {
+            $ne: req.user._id,
+          },
+        },
       ],
     });
 
