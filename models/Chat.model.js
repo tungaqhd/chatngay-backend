@@ -10,6 +10,10 @@ const chatSchema = mongoose.Schema({
     ref: "user",
     required: true,
   },
+  lastMessage: {
+    type: Date,
+    default: Date.now,
+  },
 });
 const Chat = mongoose.model("chat", chatSchema);
 module.exports = Chat;

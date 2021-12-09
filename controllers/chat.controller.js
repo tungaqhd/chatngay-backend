@@ -5,6 +5,7 @@ const Chat = require("../models/Chat.model");
 const Message = require("../models/Message.model");
 const File = require("../models/File.model");
 const xss = require("xss");
+const moment = require("moment");
 exports.getChatList = async (req, res) => {
   try {
     const chats = await Chat.aggregate([
@@ -53,6 +54,11 @@ exports.getChatList = async (req, res) => {
             { $limit: 1 },
           ],
           as: "messages",
+        },
+      },
+      {
+        $sort: {
+          lastMessage: -1,
         },
       },
     ]);
@@ -136,9 +142,12 @@ exports.sendFile = async (req, res) => {
           chatId: chat._id,
           msgType: "file",
           fileId: file._id,
+          content: "File",
         });
 
-        await Promise.all([file.save(), message.save()]);
+        chat.lastMessage = moment();
+
+        await Promise.all([file.save(), message.save(), chat.save()]);
         const oldPath = files.uploadedFile.filepath;
         const newPath = path.join(
           __dirname,
@@ -207,8 +216,9 @@ exports.sendMessage = async (req, res) => {
     });
     if (!chat) {
       chat = new Chat({ u1: from, u2: to });
-      await chat.save();
     }
+    chat.lastMessage = moment();
+    await chat.save();
     const message = new Message({ chatId: chat._id, from, ...data });
     await message.save();
     req.socketCon.to(chat.u1.toString()).emit("newMessages", message);
