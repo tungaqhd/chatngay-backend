@@ -42,6 +42,10 @@ io.on("connection", async (socket) => {
   socket.on("disconnect", () => {
     destroyCon(socket);
   });
+
+  socket.on("forceDisconnect", function () {
+    socket.disconnect(true);
+  });
 });
 
 app.use(express.static("public"));
