@@ -85,7 +85,7 @@ exports.getChat = async (req, res) => {
       .populate("fileId")
       .populate("replyToId");
 
-    res.json({ messages: messages.reverse() });
+    res.json(messages.reverse());
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: "An unexpected error has occurred" });
