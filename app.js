@@ -17,6 +17,12 @@ const app = express();
 const server = http.createServer(app);
 const io = socketio(server, { cors: { origin: "*" } });
 
+const { ExpressPeerServer } = require("peer");
+const peerServer = ExpressPeerServer(server, {
+  debug: true,
+});
+app.use("/peerjs", peerServer);
+
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -45,6 +51,11 @@ io.on("connection", async (socket) => {
 
   socket.on("forceDisconnect", function () {
     socket.disconnect(true);
+  });
+
+  socket.on("join-room", (roomId, userId, userName) => {
+    socket.join(roomId);
+    io.to(roomId).emit("user-connected", userId);
   });
 });
 

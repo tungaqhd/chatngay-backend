@@ -221,10 +221,23 @@ exports.sendMessage = async (req, res) => {
     await chat.save();
     const message = new Message({ chatId: chat._id, from, ...data });
     await message.save();
-    req.socketCon.to(chat.u1.toString()).emit("newMessages", message);
-    req.socketCon.to(chat.u2.toString()).emit("newMessages", message);
-
-    res.send();
+    const responseMessage = await Message.findById(message._id).populate(
+      "replyToId"
+    );
+    req.socketCon.to(chat.u1.toString()).emit("newMessages", responseMessage);
+    req.socketCon.to(chat.u2.toString()).emit("newMessages", responseMessage);
+    if (message.msgType === "call") {
+      if (chat.u2 === req.user._id) {
+        req.socketCon
+          .to(chat.u1.toString())
+          .emit("callReceived", message.id, req.user.name);
+      } else {
+        req.socketCon
+          .to(chat.u2.toString())
+          .emit("callReceived", message.id, req.user.name);
+      }
+    }
+    res.json({ id: message._id });
   } catch (error) {
     console.log(error.message);
     res.status(500).json({ msg: "An unexpected error has occurred" });

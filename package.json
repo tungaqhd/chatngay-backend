@@ -19,7 +19,8 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.29.1",
     "mongoose": "^6.0.13",
-    "socket.io": "^4.3.2",
+    "peer": "^0.6.1",
+    "socket.io": "^4.4.0",
     "xss": "^1.0.10"
   }
 }
