@@ -7,6 +7,7 @@ router.get("/", chatController.getChatList);
 router.get("/:id", chatController.getChat);
 router.post("/:id/file", chatController.sendFile);
 router.post("/:id", chatController.sendMessage);
+router.get("/friend/:msgId", chatController.getFriend);
 // router.post(
 //   "/forgot-password",
 //   authValidation.forgotPassword(),

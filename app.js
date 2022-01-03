@@ -5,6 +5,8 @@ db();
 const cors = require("cors");
 
 const User = require("./models/User.model");
+const Message = require("./models/Message.model");
+const Chat = require("./models/Chat.model");
 
 const { getUserId } = require("./common/jwt");
 
@@ -53,7 +55,7 @@ io.on("connection", async (socket) => {
     socket.disconnect(true);
   });
 
-  socket.on("join-room", (roomId, userId, userName) => {
+  socket.on("join-room", async (roomId, userId, userName) => {
     socket.join(roomId);
     io.to(roomId).emit("user-connected", userId);
   });

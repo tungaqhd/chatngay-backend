@@ -244,3 +244,13 @@ exports.sendMessage = async (req, res) => {
     res.status(500).json({ msg: "An unexpected error has occurred" });
   }
 };
+
+exports.getFriend = async (req, res) => {
+  const msg = await Message.findById(req.params.msgId);
+  const chat = await Chat.findById(msg.chatId);
+  if (chat.u1 === req.user._id) {
+    return res.json({ id: chat.u2 });
+  } else {
+    return res.json({ id: chat.u1 });
+  }
+};
