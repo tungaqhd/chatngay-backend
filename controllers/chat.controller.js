@@ -96,6 +96,7 @@ exports.sendFile = async (req, res) => {
   try {
     const form = formidable();
     form.parse(req, async (err, fields, files) => {
+      console.log(files);
       if (err) {
         throw err;
       }
