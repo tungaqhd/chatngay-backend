@@ -228,7 +228,7 @@ exports.sendMessage = async (req, res) => {
     req.socketCon.to(chat.u1.toString()).emit("newMessages", responseMessage);
     req.socketCon.to(chat.u2.toString()).emit("newMessages", responseMessage);
     if (message.msgType === "call") {
-      if (chat.u2 === req.user._id) {
+      if (chat.u2.toString() === req.user._id.toString()) {
         req.socketCon
           .to(chat.u1.toString())
           .emit("callReceived", message.id, req.user.name);
@@ -248,9 +248,9 @@ exports.sendMessage = async (req, res) => {
 exports.getFriend = async (req, res) => {
   const msg = await Message.findById(req.params.msgId);
   const chat = await Chat.findById(msg.chatId);
-  if (chat.u1 === req.user._id) {
-    return res.json({ id: chat.u2 });
+  if (chat.u1.toString() === req.user._id.toString()) {
+    return res.json({ id: chat.u2.toString() });
   } else {
-    return res.json({ id: chat.u1 });
+    return res.json({ id: chat.u1.toString() });
   }
 };
